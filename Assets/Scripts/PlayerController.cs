@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
         CheckPickups();
     }
 
-    @@ -44, 6 +63,8 @@ private void OnTriggerEnter2D(Collider collision)
+     -44, 6 +63,8 private void OnTriggerEnter2D(Collider collision)
     {
         //Decrement the pickupCount when we collide with a pickup
         pickupCount -= 1;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         //Display the pickups to the user
         CheckPickups();
     }
-    @@ -54,16 +75,26 @@ private void OnTriggerEnter(Collider other)
+     -54,16 +75,26 private void OnTriggerEnter(Collider other)
     void CheckPickups()
     {
         //Display the new pickup count to the player
