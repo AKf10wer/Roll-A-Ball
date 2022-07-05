@@ -9,13 +9,14 @@ public class PlayerController : MonoBehaviour
     Rigidbody rb;
     public float speed = 1.0f;
     public int pickupCount;
-    int totalPickup;
+    int totalPickups;
     private bool wonGame = false;
     [Header("UI")]
     public TMP_Text scoreText;
     public TMP_Text winText;
+    public GameObject inGamePanel;
     public GameObject winPanel;
-    public Image pickupfill;
+    public Image pickupFill;
     float pickupChunk; 
       
 
@@ -29,7 +30,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         //Work out how many pickups are in the scene and store in pickupCount
-        pickupCount = GameObject.FindGameObjectsWithTag("Pickup").Length;
+        pickupCount = GameObject.FindGameObjectsWithTag("Pickups").Length;
         //Assign the amount of pickups to the total pickups
         totalPickups = pickupCount;
         //Work out the amount of fill for our pickup fill
@@ -38,16 +39,21 @@ public class PlayerController : MonoBehaviour
         CheckPickups();
     }
 
-     -44, 6 +63,8 private void OnTriggerEnter2D(Collider collision)
+     private void OnTriggerEnter(Collider other)
     {
-        //Decrement the pickupCount when we collide with a pickup
-        pickupCount -= 1;
-        //Increase the fill amount of our pickup fill image
-        pickupFill.fillAmount = pickupfill.fillAmount + pickupChunk;
-        //Display the pickups to the user
-        CheckPickups();
+        if (other.gameObject.CompareTag("Pickups")) ;
+        {
+            //Decrement the pickupCount when we collide with a pickup
+            pickupCount -= 1;
+            //Increase the fill amount of our pickup fill image
+            pickupFill.fillAmount = pickupFill.fillAmount + pickupChunk;
+            //Display the pickups to the user
+            CheckPickups();
+            Destroy(other.gameObject);
+        }
+        
     }
-     -54,16 +75,26 private void OnTriggerEnter(Collider other)
+
     void CheckPickups()
     {
         //Display the new pickup count to the player
@@ -90,13 +96,5 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(movement * speed);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Pickup"));
-        {
-            Destroy(other.gameObject);
-        }
-
-    }
 }
 //
