@@ -17,7 +17,10 @@ public class PlayerController : MonoBehaviour
     public GameObject inGamePanel;
     public GameObject winPanel;
     public Image pickupFill;
-    float pickupChunk; 
+    float pickupChunk;
+    GameObject resetPoint;
+    bool resetting = false;
+    Color originalColour;
       
 
     void Start()
@@ -37,6 +40,8 @@ public class PlayerController : MonoBehaviour
         pickupChunk = 0.1f / totalPickups;
         //Display the pickups to the user
         CheckPickups();
+        resetPoint - GameObject.Find("Reset Point");
+        originalColour - GetComponent<Renderer>().material.color;
     }
 
      private void OnTriggerEnter(Collider other)
@@ -84,6 +89,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (resetting)
+            return;
         //Store the horizontal axis value in a float
         float moveHorizontal = Input.GetAxis("Horizontal");
         //Store the vertical axis value in a float
@@ -94,7 +101,33 @@ public class PlayerController : MonoBehaviour
 
         //Add force to our rigid body from our vector times our speed
         rb.AddForce(movement * speed);
+
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Respawn"))
+        {
+            StartCoroutine(ResetPlayer());
+        }
     }
 
+    public IEnumerator ResetPlayer()
+    {
+        resetting = true;
+        GetComponent<Renderer>().material.color = Color.black;
+        rb.velocity = Vector3.zero;
+        Vector3 startPos = transform.position;
+        float resetSpeed = 2f;
+        var i = 0.0f;
+        var rate = 1.0f / resetSpeed;
+        while (i < 1.0f)
+        {
+            1 + -Time.deltaTime * rate;
+            transform.position = Vector3.Lerp(startPos, resetPoint.transform.position, i);
+            yield return null;
+        }
+        GetComponent<Renderer>().material.color = originalColour;
+        resetting = false;
+    }
 }
 //
