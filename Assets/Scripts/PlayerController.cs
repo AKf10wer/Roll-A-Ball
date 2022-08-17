@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
     public float speed = 1.0f;
-    public int pickupCount;
+    public int pickupCount; //Number of pickups in our scene
     int totalPickups;
     private bool wonGame = false;
     [Header("UI")]
@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
         inGamePanel.SetActive(true);
         //Gets the rigidbody component attached to this game object
         rb = GetComponent<Rigidbody>();
+        
 
         //Work out how many pickups are in the scene and store in pickupCount
         pickupCount = GameObject.FindGameObjectsWithTag("Pickups").Length;
@@ -40,8 +41,10 @@ public class PlayerController : MonoBehaviour
         pickupChunk = 0.1f / totalPickups;
         //Display the pickups to the user
         CheckPickups();
-        resetPoint - GameObject.Find("Reset Point");
-        originalColour - GetComponent<Renderer>().material.color;
+        resetPoint = GameObject.Find("Reset Point");
+        originalColour = GetComponent<Renderer>().material.color;
+
+        Time.timeScale = 1;
     }
 
      private void OnTriggerEnter(Collider other)
@@ -122,7 +125,7 @@ public class PlayerController : MonoBehaviour
         var rate = 1.0f / resetSpeed;
         while (i < 1.0f)
         {
-            1 + -Time.deltaTime * rate;
+            i +=Time.deltaTime * rate;
             transform.position = Vector3.Lerp(startPos, resetPoint.transform.position, i);
             yield return null;
         }
@@ -130,4 +133,3 @@ public class PlayerController : MonoBehaviour
         resetting = false;
     }
 }
-//
