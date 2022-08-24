@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     float pickupChunk;
     GameObject resetPoint;
     bool resetting = false;
+    bool grounded = true;
     Color originalColour;
       
 
@@ -49,7 +50,7 @@ public class PlayerController : MonoBehaviour
 
      private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Pickups")) ;
+        if (other.gameObject.CompareTag("Pickups"))
         {
             //Decrement the pickupCount when we collide with a pickup
             pickupCount -= 1;
@@ -94,16 +95,19 @@ public class PlayerController : MonoBehaviour
     {
         if (resetting)
             return;
-        //Store the horizontal axis value in a float
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        //Store the vertical axis value in a float
-        float moveVertical = Input.GetAxis("Vertical");
 
-        //Create a new vector 3 based on the horizontal and vertical values
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-        //Add force to our rigid body from our vector times our speed
-        rb.AddForce(movement * speed);
+        if (grounded)
+        {
+            //Store the horizontal axis value in a float
+            float moveHorizontal = Input.GetAxis("Horizontal");
+            //Store the vertical axis value in a float
+            float moveVertical = Input.GetAxis("Vertical");
+            //Create a new vector 3 based on the horizontal and vertical values
+            Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+            //Add force to our rigid body from our vector times our speed
+            rb.AddForce(movement * speed);
+        }
+        
 
     }
     private void OnCollisionEnter(Collision collision)
@@ -113,7 +117,17 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(ResetPlayer());
         }
     }
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            grounded = true;
+    }
 
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            grounded = false;
+    }
     public IEnumerator ResetPlayer()
     {
         resetting = true;
