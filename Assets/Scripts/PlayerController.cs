@@ -22,6 +22,9 @@ public class PlayerController : MonoBehaviour
     bool resetting = false;
     bool grounded = true;
     Color originalColour;
+    GameController gameController;
+    Timer timer;
+
       
 
     void Start()
@@ -46,6 +49,11 @@ public class PlayerController : MonoBehaviour
         originalColour = GetComponent<Renderer>().material.color;
 
         Time.timeScale = 1;
+
+        gameController = FindObjectOfType<GameController>();
+        timer = FindObjectOfType<Timer>();
+        if (gameController.gameType == GameType.SpeedRun)
+            StartCoroutine(timer.StartCountdown());
     }
 
      private void OnTriggerEnter(Collider other)
@@ -107,8 +115,9 @@ public class PlayerController : MonoBehaviour
             //Add force to our rigid body from our vector times our speed
             rb.AddForce(movement * speed);
         }
-        
 
+        if (gameController.gameType == GameType.SpeedRun && !timer.IsTiming())
+            return;
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -145,5 +154,13 @@ public class PlayerController : MonoBehaviour
         }
         GetComponent<Renderer>().material.color = originalColour;
         resetting = false;
+    }
+    void WinGame()
+    {
+        gameOverScreen.SetActive(true);
+        winText.text = "You Win!";
+
+        if (gameController.gameType == GameType.SpeedRun)
+            timer.StopTimer();
     }
 }
